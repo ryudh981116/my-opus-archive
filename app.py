@@ -46,6 +46,8 @@ if 'logged_in' not in st.session_state:
     st.session_state.current_user = None
     st.session_state.current_page = "내 연주 내역"
     st.session_state.comment_submitted = False
+    st.session_state.editing_perf_id = None
+    st.session_state.editing_perf_id = None
 
 # ==================== 사용자 관리 함수 ====================
 
@@ -375,6 +377,104 @@ else:
     if st.session_state.current_page == "내 연주 내역":
         st.header("📚 내 연주 내역")
         
+        # ==================== 수정 모드 ====================
+        if st.session_state.editing_perf_id:
+            performances = get_user_performances(st.session_state.current_user)
+            perf_to_edit = next((p for p in performances if p['id'] == st.session_state.editing_perf_id), None)
+            
+            if perf_to_edit:
+                st.warning("✏️ 연주 내역 수정 모드")
+                st.divider()
+                
+                categories = load_categories()
+                
+                with st.form("edit_performance_form"):
+                    col1, col2 = st.columns(2)
+                    
+                    with col1:
+                        edit_date = st.date_input("연주회 날짜", value=perf_to_edit['date'], key="edit_perf_date")
+                        edit_venue = st.selectbox("연주 장소", categories['venues'], 
+                                                 index=categories['venues'].index(perf_to_edit['venue']) if perf_to_edit['venue'] in categories['venues'] else 0,
+                                                 key="edit_perf_venue")
+                        edit_conductor = st.text_input("지휘자", value=perf_to_edit['conductor'], key="edit_perf_conductor")
+                    
+                    with col2:
+                        edit_ensemble_name = st.text_input("단체명", value=perf_to_edit['ensemble_name'], key="edit_perf_ensemble")
+                        edit_instrument = st.selectbox("악기", categories['instruments'],
+                                                      index=categories['instruments'].index(perf_to_edit['instrument']) if perf_to_edit['instrument'] in categories['instruments'] else 0,
+                                                      key="edit_perf_instrument")
+                        edit_sub_part = st.selectbox("세부 파트", categories['sub_parts'],
+                                                    index=categories['sub_parts'].index(perf_to_edit['sub_part']) if perf_to_edit['sub_part'] in categories['sub_parts'] else 0,
+                                                    key="edit_perf_sub_part")
+                    
+                    st.subheader("📋 곡목")
+                    edit_pieces_text = st.text_area("곡목 (줄바꿈으로 구분)", 
+                                                   value="\\n".join(perf_to_edit['pieces']) if perf_to_edit['pieces'] else "",
+                                                   placeholder="차이코프스키 바이올린 협주곡\\n베토벤 크로이처 소나타",
+                                                   key="edit_pieces", height=100)
+                    
+                    st.divider()
+                    
+                    col1, col2 = st.columns(2)
+                    with col1:
+                        edit_is_guest = st.checkbox("객원 출연", value=perf_to_edit.get('is_guest', False))
+                        if edit_is_guest:
+                            edit_guest_fee = st.number_input("페이 (원)", min_value=0, step=10000, value=int(perf_to_edit.get('guest_fee', 0)) if perf_to_edit.get('guest_fee') else 0, key="edit_guest_fee")
+                        else:
+                            edit_guest_fee = None
+                    
+                    with col2:
+                        edit_is_public = st.checkbox("공개 (다른 사용자가 볼 수 있습니다)", value=perf_to_edit.get('is_public', False))
+                    
+                    st.divider()
+                    
+                    col1, col2 = st.columns(2)
+                    with col1:
+                        edit_youtube_url = st.text_input("유튜브 영상 URL (선택사항)", value=perf_to_edit.get('youtube_url', ''), key="edit_youtube_url")
+                    with col2:
+                        edit_poster_url = st.text_input("포스터 이미지 URL (선택사항)", value=perf_to_edit.get('poster_url', ''), key="edit_poster_url")
+                    
+                    col1, col2 = st.columns(2)
+                    with col1:
+                        edit_submitted = st.form_submit_button("💾 저장", use_container_width=True)
+                    with col2:
+                        cancel_clicked = st.form_submit_button("❌ 취소", use_container_width=True)
+                    
+                    if edit_submitted:
+                        if not edit_conductor or not edit_ensemble_name or not edit_pieces_text.strip():
+                            st.error("필수 정보를 모두 입력해주세요.")
+                        else:
+                            edit_pieces = [p.strip() for p in edit_pieces_text.strip().split("\\n") if p.strip()]
+                            
+                            updated_data = {
+                                'date': edit_date.isoformat(),
+                                'venue': edit_venue,
+                                'pieces': edit_pieces,
+                                'instrument': edit_instrument,
+                                'sub_part': edit_sub_part,
+                                'is_guest': edit_is_guest,
+                                'guest_fee': edit_guest_fee or '',
+                                'conductor': edit_conductor,
+                                'ensemble_name': edit_ensemble_name,
+                                'is_public': edit_is_public,
+                                'youtube_url': edit_youtube_url,
+                                'poster_url': edit_poster_url
+                            }
+                            
+                            if update_performance(st.session_state.editing_perf_id, updated_data):
+                                st.success("✅ 연주 내역이 수정되었습니다!")
+                                st.session_state.editing_perf_id = None
+                                st.rerun()
+                            else:
+                                st.error("수정에 실패했습니다.")
+                    
+                    if cancel_clicked:
+                        st.session_state.editing_perf_id = None
+                        st.rerun()
+                
+                st.divider()
+        
+        # ==================== 연주 내역 목록 ====================
         performances = get_user_performances(st.session_state.current_user)
         
         if not performances:
@@ -407,6 +507,7 @@ else:
                         with edit_btn:
                             if st.button("✏️", key=f"edit_{perf['id']}", help="수정"):
                                 st.session_state.editing_perf_id = perf['id']
+                                st.rerun()
                         with delete_btn:
                             if st.button("🗑️", key=f"delete_{perf['id']}", help="삭제"):
                                 if delete_performance(perf['id']):
