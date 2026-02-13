@@ -5,6 +5,7 @@ My Opus Archive - 클래식 공연 연주 내역 관리 웹앱 (v2.0 - 개선판
 import streamlit as st
 import json
 import os
+import time
 from datetime import datetime
 from pathlib import Path
 
@@ -368,6 +369,7 @@ if not st.session_state.logged_in:
                     success, message = register_user(signup_username, signup_email, signup_password)
                     if success:
                         st.success("✅ 회원가입 성공!")
+                        time.sleep(1.5)  # 1.5초 대기
                         st.session_state.active_auth_tab = 0
                         st.rerun()
                     else:
