@@ -285,50 +285,7 @@ st.markdown("_클래식 공연 연주 내역을 간편하게 기록하세요_")
 
 st.sidebar.title("🎭 네비게이션")
 
-if not st.session_state.logged_in:
-    # 로그인 페이지
-    st.sidebar.subheader("👤 계정")
-    auth_mode = st.sidebar.radio("선택", ["로그인", "회원가입"], label_visibility="collapsed")
-    
-    if auth_mode == "로그인":
-        st.sidebar.markdown("---")
-        username = st.sidebar.text_input("사용자명", key="login_username")
-        password = st.sidebar.text_input("비밀번호", type="password", key="login_password")
-        
-        if st.sidebar.button("🔓 로그인"):
-            success, message = login_user(username, password)
-            if success:
-                st.session_state.logged_in = True
-                st.session_state.current_user = username
-                st.success("로그인되었습니다!")
-                st.rerun()
-            else:
-                st.error(message)
-    
-    else:  # 회원가입
-        st.sidebar.markdown("---")
-        new_username = st.sidebar.text_input("사용자명", key="signup_username")
-        new_email = st.sidebar.text_input("이메일", key="signup_email")
-        new_password = st.sidebar.text_input("비밀번호", type="password", key="signup_password")
-        new_password_check = st.sidebar.text_input("비밀번호 확인", type="password", key="signup_password_check")
-        
-        if st.sidebar.button("✍️ 회원가입"):
-            if not new_username or not new_email or not new_password:
-                st.error("모든 필드를 입력해주세요.")
-            elif new_password != new_password_check:
-                st.error("비밀번호가 일치하지 않습니다.")
-            else:
-                success, message = register_user(new_username, new_email, new_password)
-                if success:
-                    st.success(message)
-                    st.info("로그인 페이지에서 로그인해주세요.")
-                else:
-                    st.error(message)
-    
-    st.sidebar.markdown("---")
-    st.sidebar.info("💡 계정을 만들거나 로그인하여 연주 내역을 기록하세요!")
-
-else:
+if st.session_state.logged_in:
     # 로그아웃 (로그인 후)
     st.sidebar.subheader(f"👋 {st.session_state.current_user}님")
     if st.sidebar.button("🚪 로그아웃"):
@@ -340,31 +297,12 @@ else:
 
 if not st.session_state.logged_in:
     # 로그인/회원가입 폼 - 메인 콘텐츠 영역
-    col1, col2 = st.columns([2, 1])
+    st.title("🎵 My Opus Archive")
+    st.subheader("클래식 공연 연주 내역 관리 시스템")
     
-    with col1:
-        st.title("🎵 My Opus Archive")
-        st.subheader("클래식 공연 연주 내역 관리 시스템")
-
+    st.divider()
     
-    st.markdown("""
-    ---
-    
-    ### ✨ 주요 기능
-    
-    - 📝 **연주 내역 기록**: 공연 일시, 장소, 곡목, 악기, 지휘자 등 상세 정보 저장
-    - 🔐 **공개/비공개 설정**: 자신의 아카이브 공개 범위 선택  
-    - 🔍 **검색/필터**: 날짜, 장소, 지휘자, 악기 등으로 빠르게 검색
-    - 💬 **커뮤니티**: 다른 음악가의 연주를 감상하고 댓글, 좋아요 남기기
-    - ✏️ **수정/삭제**: 언제든지 연주 내역 관리
-    
-    ---
-    """)
-    
-    with col2:
-        st.write("")  # 스페이싱
-    
-    # 로그인/회원가입 탭
+    # 로그인/회원가입 탭 (맨 위)
     tab1, tab2 = st.tabs(["🔐 로그인", "✍️ 회원가입"])
     
     with tab1:
@@ -401,6 +339,19 @@ if not st.session_state.logged_in:
                     st.info("✅ 계정이 생성되었습니다. 위의 로그인 탭에서 로그인하세요.")
                 else:
                     st.error(message)
+    
+    st.divider()
+    
+    # 기능 설명 (아래)
+    st.markdown("""
+    ### ✨ 주요 기능
+    
+    - 📝 **연주 내역 기록**: 공연 일시, 장소, 곡목, 악기, 지휘자 등 상세 정보 저장
+    - 🔐 **공개/비공개 설정**: 자신의 아카이브 공개 범위 선택  
+    - 🔍 **검색/필터**: 날짜, 장소, 지휘자, 악기 등으로 빠르게 검색
+    - 💬 **커뮤니티**: 다른 음악가의 연주를 감상하고 댓글, 좋아요 남기기
+    - ✏️ **수정/삭제**: 언제든지 연주 내역 관리
+    """)
 
 else:
     # ==================== 페이지 네비게이션 (버튼) ====================
