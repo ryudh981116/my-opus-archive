@@ -292,6 +292,22 @@ if st.session_state.logged_in:
         st.session_state.logged_in = False
         st.session_state.current_user = None
         st.rerun()
+    
+    st.sidebar.markdown("---")
+    
+    # 페이지 네비게이션 (사이드바)
+    st.sidebar.subheader("📑 페이지")
+    pages = ["내 연주 내역", "새 연주 기록", "공개 아카이브", "검색/필터", "설정 관리"]
+    icons = ["📚", "✏️", "🌍", "🔍", "⚙️"]
+    
+    for page, icon in zip(pages, icons):
+        if st.sidebar.button(
+            f"{icon} {page}", 
+            use_container_width=True,
+            type="primary" if st.session_state.current_page == page else "secondary"
+        ):
+            st.session_state.current_page = page
+            st.rerun()
 
 # ==================== UI: 메인 콘텐츠 ====================
 
@@ -354,38 +370,6 @@ if not st.session_state.logged_in:
     """)
 
 else:
-    # ==================== 페이지 네비게이션 (버튼) ====================
-    
-    nav_col1, nav_col2, nav_col3, nav_col4, nav_col5 = st.columns(5)
-    pages = ["내 연주 내역", "새 연주 기록", "공개 아카이브", "검색/필터", "설정 관리"]
-    
-    with nav_col1:
-        if st.button("📚 내 연주 내역", use_container_width=True, 
-                    type="primary" if st.session_state.current_page == "내 연주 내역" else "secondary"):
-            st.session_state.current_page = "내 연주 내역"
-    
-    with nav_col2:
-        if st.button("✏️ 새 연주 기록", use_container_width=True,
-                    type="primary" if st.session_state.current_page == "새 연주 기록" else "secondary"):
-            st.session_state.current_page = "새 연주 기록"
-    
-    with nav_col3:
-        if st.button("🌍 공개 아카이브", use_container_width=True,
-                    type="primary" if st.session_state.current_page == "공개 아카이브" else "secondary"):
-            st.session_state.current_page = "공개 아카이브"
-    
-    with nav_col4:
-        if st.button("🔍 검색/필터", use_container_width=True,
-                    type="primary" if st.session_state.current_page == "검색/필터" else "secondary"):
-            st.session_state.current_page = "검색/필터"
-    
-    with nav_col5:
-        if st.button("⚙️ 설정 관리", use_container_width=True,
-                    type="primary" if st.session_state.current_page == "설정 관리" else "secondary"):
-            st.session_state.current_page = "설정 관리"
-    
-    st.divider()
-    
     # ==================== 페이지별 콘텐츠 ====================
     
     if st.session_state.current_page == "내 연주 내역":
