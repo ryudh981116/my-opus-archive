@@ -319,14 +319,10 @@ if not st.session_state.logged_in:
     col1, col2, col3 = st.columns([1, 2, 1])
     
     with col2:
-        # 활성 탭에 따라 로그인/회원가입 전환
-        if st.session_state.active_auth_tab == 0:
-            # 로그인 탭
-            if st.button("회원가입으로 전환", use_container_width=True, help="회원가입 화면으로 이동"):
-                st.session_state.active_auth_tab = 1
-                st.rerun()
-            
-            st.subheader("🔐 로그인")
+        tab1, tab2 = st.tabs(["🔐 로그인", "✍️ 회원가입"])
+        
+        with tab1:
+            st.subheader("로그인")
             login_username = st.text_input("사용자명", key="login_username_main")
             login_password = st.text_input("비밀번호", type="password", key="login_password_main")
             
@@ -340,13 +336,8 @@ if not st.session_state.logged_in:
                 else:
                     st.error(message)
         
-        else:
-            # 회원가입 탭
-            if st.button("로그인으로 전환", use_container_width=True, help="로그인 화면으로 이동"):
-                st.session_state.active_auth_tab = 0
-                st.rerun()
-            
-            st.subheader("✍️ 회원가입")
+        with tab2:
+            st.subheader("회원가입")
             signup_username = st.text_input("사용자명", key="signup_username_main")
             signup_email = st.text_input("이메일", key="signup_email_main")
             signup_password = st.text_input("비밀번호", type="password", key="signup_password_main")
