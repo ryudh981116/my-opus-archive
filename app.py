@@ -627,14 +627,13 @@ else:
         with st.expander("📍 장소 관리", expanded=True):
             col1, col2 = st.columns([3, 1])
             with col1:
-                new_venue = st.text_input("새 장소 추가", placeholder="예: 서울 영상미디어센터", key="new_venue", value=st.session_state.get('new_venue', ''))
+                new_venue = st.text_input("새 장소 추가", placeholder="예: 서울 영상미디어센터", key="new_venue")
             with col2:
                 st.write("")
                 if st.button("➕ 추가", key="add_venue"):
                     if new_venue.strip():
                         if add_category('venues', new_venue.strip()):
                             st.success(f"✅ '{new_venue}'이 추가되었습니다.")
-                            st.session_state['new_venue'] = ""
                             st.rerun()
                         else:
                             st.warning(f"⚠️ '{new_venue}'은 이미 있습니다.")
@@ -654,14 +653,13 @@ else:
         with st.expander("🎻 악기 관리"):
             col1, col2 = st.columns([3, 1])
             with col1:
-                new_instrument = st.text_input("새 악기 추가", placeholder="예: 하프", key="new_instrument", value=st.session_state.get('new_instrument', ''))
+                new_instrument = st.text_input("새 악기 추가", placeholder="예: 하프", key="new_instrument")
             with col2:
                 st.write("")
                 if st.button("➕ 추가", key="add_instrument"):
                     if new_instrument.strip():
                         if add_category('instruments', new_instrument.strip()):
                             st.success(f"✅ '{new_instrument}'이 추가되었습니다.")
-                            st.session_state['new_instrument'] = ""
                             st.rerun()
                         else:
                             st.warning(f"⚠️ '{new_instrument}'은 이미 있습니다.")
@@ -683,14 +681,13 @@ else:
         with st.expander("🎼 세부 파트 관리"):
             col1, col2 = st.columns([3, 1])
             with col1:
-                new_sub_part = st.text_input("새 파트 추가", placeholder="예: Concertmaster", key="new_sub_part", value=st.session_state.get('new_sub_part', ''))
+                new_sub_part = st.text_input("새 파트 추가", placeholder="예: Concertmaster", key="new_sub_part")
             with col2:
                 st.write("")
                 if st.button("➕ 추가", key="add_sub_part"):
                     if new_sub_part.strip():
                         if add_category('sub_parts', new_sub_part.strip()):
                             st.success(f"✅ '{new_sub_part}'이 추가되었습니다.")
-                            st.session_state['new_sub_part'] = ""
                             st.rerun()
                         else:
                             st.warning(f"⚠️ '{new_sub_part}'은 이미 있습니다.")
