@@ -315,61 +315,49 @@ if st.session_state.logged_in:
 
 if not st.session_state.logged_in:
     # 로그인/회원가입 폼 - 메인 콘텐츠 영역
-    st.title("🎵 My Opus Archive")
-    st.subheader("클래식 공연 연주 내역 관리 시스템")
+    st.markdown("")
+    st.markdown("")
     
-    st.divider()
+    # 컴팩트한 로그인 폼 (가운데 정렬)
+    col1, col2, col3 = st.columns([1, 2, 1])
     
-    # 로그인/회원가입 탭 (맨 위)
-    tab1, tab2 = st.tabs(["🔐 로그인", "✍️ 회원가입"])
-    
-    with tab1:
-        st.subheader("로그인")
-        login_username = st.text_input("사용자명", key="login_username_main")
-        login_password = st.text_input("비밀번호", type="password", key="login_password_main")
+    with col2:
+        tab1, tab2 = st.tabs(["🔐 로그인", "✍️ 회원가입"])
         
-        if st.button("🔓 로그인", use_container_width=True):
-            success, message = login_user(login_username, login_password)
-            if success:
-                st.session_state.logged_in = True
-                st.session_state.current_user = login_username
-                st.success("로그인되었습니다!")
-                st.rerun()
-            else:
-                st.error(message)
-    
-    with tab2:
-        st.subheader("회원가입")
-        signup_username = st.text_input("사용자명", key="signup_username_main")
-        signup_email = st.text_input("이메일", key="signup_email_main")
-        signup_password = st.text_input("비밀번호", type="password", key="signup_password_main")
-        signup_password_check = st.text_input("비밀번호 확인", type="password", key="signup_password_check_main")
-        
-        if st.button("✍️ 회원가입", use_container_width=True):
-            if not signup_username or not signup_email or not signup_password:
-                st.error("모든 필드를 입력해주세요.")
-            elif signup_password != signup_password_check:
-                st.error("비밀번호가 일치하지 않습니다.")
-            else:
-                success, message = register_user(signup_username, signup_email, signup_password)
+        with tab1:
+            st.subheader("로그인")
+            login_username = st.text_input("사용자명", key="login_username_main")
+            login_password = st.text_input("비밀번호", type="password", key="login_password_main")
+            
+            if st.button("🔓 로그인", use_container_width=True):
+                success, message = login_user(login_username, login_password)
                 if success:
-                    st.success(message)
-                    st.info("✅ 계정이 생성되었습니다. 위의 로그인 탭에서 로그인하세요.")
+                    st.session_state.logged_in = True
+                    st.session_state.current_user = login_username
+                    st.success("로그인되었습니다!")
+                    st.rerun()
                 else:
                     st.error(message)
-    
-    st.divider()
-    
-    # 기능 설명 (아래)
-    st.markdown("""
-    ### ✨ 주요 기능
-    
-    - 📝 **연주 내역 기록**: 공연 일시, 장소, 곡목, 악기, 지휘자 등 상세 정보 저장
-    - 🔐 **공개/비공개 설정**: 자신의 아카이브 공개 범위 선택  
-    - 🔍 **검색/필터**: 날짜, 장소, 지휘자, 악기 등으로 빠르게 검색
-    - 💬 **커뮤니티**: 다른 음악가의 연주를 감상하고 댓글, 좋아요 남기기
-    - ✏️ **수정/삭제**: 언제든지 연주 내역 관리
-    """)
+        
+        with tab2:
+            st.subheader("회원가입")
+            signup_username = st.text_input("사용자명", key="signup_username_main")
+            signup_email = st.text_input("이메일", key="signup_email_main")
+            signup_password = st.text_input("비밀번호", type="password", key="signup_password_main")
+            signup_password_check = st.text_input("비밀번호 확인", type="password", key="signup_password_check_main")
+            
+            if st.button("✍️ 회원가입", use_container_width=True):
+                if not signup_username or not signup_email or not signup_password:
+                    st.error("모든 필드를 입력해주세요.")
+                elif signup_password != signup_password_check:
+                    st.error("비밀번호가 일치하지 않습니다.")
+                else:
+                    success, message = register_user(signup_username, signup_email, signup_password)
+                    if success:
+                        st.success(message)
+                        st.info("✅ 계정이 생성되었습니다. 위의 로그인 탭에서 로그인하세요.")
+                    else:
+                        st.error(message)
 
 else:
     # ==================== 페이지별 콘텐츠 ====================
