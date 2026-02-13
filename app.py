@@ -634,6 +634,7 @@ else:
                     if new_venue.strip():
                         if add_category('venues', new_venue.strip()):
                             st.success(f"✅ '{new_venue}'이 추가되었습니다.")
+                            st.session_state['new_venue'] = ""
                             st.rerun()
                         else:
                             st.warning(f"⚠️ '{new_venue}'은 이미 있습니다.")
@@ -660,6 +661,7 @@ else:
                     if new_instrument.strip():
                         if add_category('instruments', new_instrument.strip()):
                             st.success(f"✅ '{new_instrument}'이 추가되었습니다.")
+                            st.session_state['new_instrument'] = ""
                             st.rerun()
                         else:
                             st.warning(f"⚠️ '{new_instrument}'은 이미 있습니다.")
@@ -688,6 +690,7 @@ else:
                     if new_sub_part.strip():
                         if add_category('sub_parts', new_sub_part.strip()):
                             st.success(f"✅ '{new_sub_part}'이 추가되었습니다.")
+                            st.session_state['new_sub_part'] = ""
                             st.rerun()
                         else:
                             st.warning(f"⚠️ '{new_sub_part}'은 이미 있습니다.")
