@@ -319,9 +319,24 @@ if not st.session_state.logged_in:
     col1, col2, col3 = st.columns([1, 2, 1])
     
     with col2:
-        tab1, tab2 = st.tabs(["🔐 로그인", "✍️ 회원가입"])
+        # 탭 버튼
+        tab_col1, tab_col2 = st.columns(2)
+        with tab_col1:
+            if st.button("🔐 로그인", use_container_width=True, 
+                        type="primary" if st.session_state.active_auth_tab == 0 else "secondary"):
+                st.session_state.active_auth_tab = 0
+                st.rerun()
         
-        with tab1:
+        with tab_col2:
+            if st.button("✍️ 회원가입", use_container_width=True,
+                        type="primary" if st.session_state.active_auth_tab == 1 else "secondary"):
+                st.session_state.active_auth_tab = 1
+                st.rerun()
+        
+        st.divider()
+        
+        # 로그인 화면
+        if st.session_state.active_auth_tab == 0:
             st.subheader("로그인")
             login_username = st.text_input("사용자명", key="login_username_main")
             login_password = st.text_input("비밀번호", type="password", key="login_password_main")
@@ -336,7 +351,8 @@ if not st.session_state.logged_in:
                 else:
                     st.error(message)
         
-        with tab2:
+        # 회원가입 화면
+        else:
             st.subheader("회원가입")
             signup_username = st.text_input("사용자명", key="signup_username_main")
             signup_email = st.text_input("이메일", key="signup_email_main")
@@ -351,7 +367,7 @@ if not st.session_state.logged_in:
                 else:
                     success, message = register_user(signup_username, signup_email, signup_password)
                     if success:
-                        st.success("✅ 회원가입이 완료되었습니다!")
+                        st.success("✅ 회원가입 성공!")
                         st.session_state.active_auth_tab = 0
                         st.rerun()
                     else:
