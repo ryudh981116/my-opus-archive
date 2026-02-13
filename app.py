@@ -285,11 +285,9 @@ st.markdown("_클래식 공연 연주 내역을 간편하게 기록하세요_")
 
 # ==================== UI: 사이드바 ====================
 
-st.sidebar.title("🎭 네비게이션")
-
 if st.session_state.logged_in:
     # 로그아웃 (로그인 후)
-    st.sidebar.subheader(f"👋 {st.session_state.current_user}님")
+    st.sidebar.subheader(f"{st.session_state.current_user}님")
     if st.sidebar.button("🚪 로그아웃"):
         st.session_state.logged_in = False
         st.session_state.current_user = None
@@ -298,7 +296,6 @@ if st.session_state.logged_in:
     st.sidebar.markdown("---")
     
     # 페이지 네비게이션 (사이드바)
-    st.sidebar.subheader("📑 페이지")
     pages = ["내 연주 내역", "새 연주 기록", "공개 아카이브", "검색/필터", "설정 관리"]
     icons = ["📚", "✏️", "🌍", "🔍", "⚙️"]
     
